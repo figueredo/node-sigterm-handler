@@ -19,6 +19,9 @@ describe 'SigtermHandler', ->
         @sut.exit()
         _.delay done, 50
 
+      it 'should log the sigterm event', ->
+        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+
       it 'should call the registered handler', ->
         expect(@handler).to.have.been.called
 
@@ -41,6 +44,9 @@ describe 'SigtermHandler', ->
         @sut.exit()
         _.delay done, 50
 
+      it 'should log the sigterm event', ->
+        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+
       it 'should call the registered handlers', ->
         expect(@handlerOne).to.have.been.called
         expect(@handlerTwo).to.have.been.called
@@ -59,6 +65,9 @@ describe 'SigtermHandler', ->
         @sut.exit()
         _.delay done, 1000
 
+      it 'should log the sigterm event', ->
+        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+
       it 'should call the registered handler', ->
         expect(@handler).to.have.been.called
 
@@ -73,6 +82,9 @@ describe 'SigtermHandler', ->
         @sut.register 'hello'
         @sut.exit()
         _.delay done, 1000
+
+      it 'should log the sigterm event', ->
+        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
 
       it 'should call process.on SIGTERM', ->
         expect(@process.on).to.have.been.calledWith 'SIGTERM'
@@ -89,6 +101,9 @@ describe 'SigtermHandler', ->
           callback new Error 'oh no'
         @sut.exit()
         _.delay done, 50
+
+      it 'should log the sigterm event', ->
+        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
 
       it 'should log the error', ->
         expect(@logFn).to.have.been.called

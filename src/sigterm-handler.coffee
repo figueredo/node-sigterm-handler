@@ -16,6 +16,7 @@ class SigtermHandler
     @handlers.push fn
 
   exit: =>
+    @logFn 'SIGTERM caught, exiting'
     exitFn = async.timeout @_exit, @timeout
     exitFn @_die
 
