@@ -2,21 +2,27 @@ _     = require 'lodash'
 async = require 'async'
 
 class SigtermHandler
-  constructor: ({ @process, @logFn, @timeout }={}) ->
+  constructor: ({ @process, @logFn, @timeout, @events }={}) ->
     @process ?= process
     @logFn   ?= console.error
     @timeout ?= 20 * 1000
+    @handleSigInt ?= false
     @handlers = []
+    @events ?= ['SIGTERM']
+    throw new Error 'Events can not be empty' if _.isEmpty(@events)
+    throw new Error 'Events must be an array' unless _.isArray(@events)
     @_listen()
 
   _listen: =>
-    @process.on 'SIGTERM', @exit
+    _.each @events, (event) =>
+      @process.on event, =>
+        @exit event
 
   register: (fn) =>
     @handlers.push fn
 
-  exit: =>
-    @logFn 'SIGTERM caught, exiting'
+  exit: (event) =>
+    @logFn "#{event} caught, exiting"
     exitFn = async.timeout @_exit, @timeout
     exitFn @_die
 

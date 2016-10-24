@@ -1,13 +1,13 @@
 _              = require 'lodash'
 SigtermHandler = require '../src/sigterm-handler.coffee'
 
-describe 'SigtermHandler', ->
+describe 'SigintHandler', ->
   beforeEach ->
     @process =
       exit: sinon.spy()
       on:   sinon.spy()
     @logFn = sinon.spy()
-    @sut = new SigtermHandler { @process, @logFn, timeout: 500 }
+    @sut = new SigtermHandler { @process, @logFn, timeout: 500, events: ['SIGINT']}
 
   describe 'when successfuly exits', ->
     describe 'when called with one registered handler', ->
@@ -16,17 +16,17 @@ describe 'SigtermHandler', ->
         @sut.register (callback) =>
           @handler()
           callback null
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 50
 
       it 'should log the sigterm event', ->
-        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+        expect(@logFn).to.have.been.calledWith 'SIGINT caught, exiting'
 
       it 'should call the registered handler', ->
         expect(@handler).to.have.been.called
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 0', ->
         expect(@process.exit).to.have.been.calledWith 0
@@ -41,18 +41,18 @@ describe 'SigtermHandler', ->
         @sut.register (callback) =>
           @handlerTwo()
           callback null
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 50
 
       it 'should log the sigterm event', ->
-        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+        expect(@logFn).to.have.been.calledWith 'SIGINT caught, exiting'
 
       it 'should call the registered handlers', ->
         expect(@handlerOne).to.have.been.called
         expect(@handlerTwo).to.have.been.called
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 0', ->
         expect(@process.exit).to.have.been.calledWith 0
@@ -62,17 +62,17 @@ describe 'SigtermHandler', ->
         @handler = sinon.spy()
         @sut.register (callback) =>
           @handler()
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 1000
 
       it 'should log the sigterm event', ->
-        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+        expect(@logFn).to.have.been.calledWith 'SIGINT caught, exiting'
 
       it 'should call the registered handler', ->
         expect(@handler).to.have.been.called
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 0', ->
         expect(@process.exit).to.have.been.calledWith 0
@@ -80,14 +80,14 @@ describe 'SigtermHandler', ->
     describe 'when a registered handler is not a function', ->
       beforeEach (done) ->
         @sut.register 'hello'
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 1000
 
       it 'should log the sigterm event', ->
-        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+        expect(@logFn).to.have.been.calledWith 'SIGINT caught, exiting'
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 0', ->
         expect(@process.exit).to.have.been.calledWith 0
@@ -99,11 +99,11 @@ describe 'SigtermHandler', ->
         @sut.register (callback) =>
           @handler()
           callback new Error 'oh no'
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 50
 
       it 'should log the sigterm event', ->
-        expect(@logFn).to.have.been.calledWith 'SIGTERM caught, exiting'
+        expect(@logFn).to.have.been.calledWith 'SIGINT caught, exiting'
 
       it 'should log the error', ->
         expect(@logFn).to.have.been.called
@@ -111,8 +111,8 @@ describe 'SigtermHandler', ->
       it 'should call the registered handler', ->
         expect(@handler).to.have.been.called
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 1', ->
         expect(@process.exit).to.have.been.calledWith 1
@@ -127,7 +127,7 @@ describe 'SigtermHandler', ->
         @sut.register (callback) =>
           @handlerTwo()
           callback null
-        @sut.exit('SIGTERM')
+        @sut.exit('SIGINT')
         _.delay done, 50
 
       it 'should log the error', ->
@@ -137,19 +137,19 @@ describe 'SigtermHandler', ->
         expect(@handlerOne).to.have.been.called
         expect(@handlerTwo).to.have.been.called
 
-      it 'should call process.on SIGTERM', ->
-        expect(@process.on).to.have.been.calledWith 'SIGTERM'
+      it 'should call process.on SIGINT', ->
+        expect(@process.on).to.have.been.calledWith 'SIGINT'
 
       it 'should call process.exit with 1', ->
         expect(@process.exit).to.have.been.calledWith 1
 
   describe 'when there are no registered handlers', ->
     beforeEach (done) ->
-      @sut.exit('SIGTERM')
+      @sut.exit('SIGINT')
       _.delay done, 50
 
-    it 'should call process.on SIGTERM', ->
-      expect(@process.on).to.have.been.calledWith 'SIGTERM'
+    it 'should call process.on SIGINT', ->
+      expect(@process.on).to.have.been.calledWith 'SIGINT'
 
     it 'should call process.exit with 0', ->
       expect(@process.exit).to.have.been.calledWith 0

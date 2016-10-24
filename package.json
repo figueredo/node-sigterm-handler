@@ -1,6 +1,6 @@
 {
   "name": "sigterm-handler",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Gracefuly exit on Sigterm",
   "main": "index.js",
   "scripts": {
