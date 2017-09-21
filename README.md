@@ -1,6 +1,6 @@
-# node-sigterm-handler
+# sigterm-handler
 
-Gracefuly exit on SIGTERM
+Gracefully exit on SIGTERM or SIGINT
 
 [![Build Status](https://travis-ci.org/octoblu/node-sigterm-handler.svg?branch=master)](https://travis-ci.org/octoblu/node-sigterm-handler)
 [![Test Coverage](https://codecov.io/gh/octoblu/node-sigterm-handler/branch/master/graph/badge.svg)](https://codecov.io/gh/octoblu/node-sigterm-handler)
@@ -15,36 +15,13 @@ npm install --save sigterm-handler
 
 ## Usage
 
-Handle SIGTERM
+```javascript
+const sigtermHandler = require("sigterm-handler")
 
-```coffee
-SigtermHandler = require 'sigterm-handler'
-
-sigtermHandler = new SigtermHandler()
-
-# a registered handler will be called when a SIGTERM is triggered
-# multiple handlers can be registered
-# will process.exit 1 if callback is called with an error
-# will process.exit 0 if callback is called with no error
-# will timeout after 20 seconds, timeouts are exited with 0
-sigtermHandler.register (callback) =>
-  return callback error if # some error case
-  callback null
-```
-
-Handle SIGTERM and SIGINT
-
-```coffee
-SigtermHandler = require 'sigterm-handler'
-
-sigtermHandler = new SigtermHandler({ events: ['SIGTERM', 'SIGINT'] })
-
-# a registered handler will be called when a SIGTERM, or SIGINT is triggered
-# multiple handlers can be registered
-# will process.exit 1 if callback is called with an error
-# will process.exit 0 if callback is called with no error
-# will timeout after 20 seconds, timeouts are exited with 0
-sigtermHandler.register (callback) =>
-  return callback error if # some error case
-  callback null
+sigtermHandler(() => {
+  // this will get called on SIGTERM or SIGINT
+  // do cleanup here
+  // if async, return promises
+  return Promise.resolve()
+})
 ```

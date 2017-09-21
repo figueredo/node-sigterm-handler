@@ -1,2 +1,1 @@
-require('coffee-script/register')
-module.exports=require('./src/sigterm-handler.coffee')
+module.exports = require("./lib/sigterm-handler")
